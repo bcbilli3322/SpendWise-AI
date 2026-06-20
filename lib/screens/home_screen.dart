@@ -119,11 +119,29 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
 
                         onDismissed: (_) {
+                          final deletedExpense = expense;
+                          final deletedIndex = index;
+                          
+
                           provider.deleteExpense(index);
 
+                          ScaffoldMessenger.of(context).clearSnackBars();
+
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Expense deleted"),
+                            SnackBar(
+                              content: const Text("Expense deleted"),
+                              duration: const Duration(seconds: 4),
+
+                              action: SnackBarAction(
+                                label: "UNDO",
+
+                                onPressed: () {
+                                  provider.restoreExpense(
+                                    deletedIndex,
+                                    deletedExpense,
+                                  );
+                                },
+                              ),
                             ),
                           );
                         },

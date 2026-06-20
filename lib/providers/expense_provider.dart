@@ -32,4 +32,9 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void restoreExpense(int index, Expense expense) {
+    _expenses.insert(index, expense);
+    notifyListeners();
+  }
+
 }
