@@ -282,7 +282,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
                     child: const Text(
 
-                      "Save Expense",
+                      "Add Expense",
 
                       style: TextStyle(fontSize: 16),
 
