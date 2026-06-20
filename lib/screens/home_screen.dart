@@ -103,27 +103,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       final expense = provider.expenses[index];
 
-                      return Card(
-                        child: ListTile(
+                      return Dismissible(
+                        key: ValueKey(expense),
 
-                          leading: CircleAvatar(
-                            child: Text(
-                            expense.category[0],
+                        direction: DismissDirection.endToStart,
+
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          color: Colors.red,
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                        ),
+
+                        onDismissed: (_) {
+                          provider.deleteExpense(index);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Expense deleted"),
                             ),
-                          ),
+                          );
+                        },
 
-                          title: Text(expense.note.isEmpty
-                              ? expense.category
-                              : expense.note),
+                        child: Card(
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Text(expense.category[0]),
+                            ),
 
-                          subtitle: Text(
-                            "${expense.category} • ${expense.paymentMethod}",
-                          ),
+                            title: Text(
+                              expense.note.isEmpty
+                                  ? expense.category
+                                  : expense.note,
+                            ),
 
-                          trailing: Text(
-                            "₹${expense.amount.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
+                            subtitle: Text(
+                              "${expense.category} • ${expense.paymentMethod}",
+                            ),
+
+                            trailing: Text(
+                              "₹${expense.amount.toStringAsFixed(2)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
