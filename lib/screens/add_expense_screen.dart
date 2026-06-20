@@ -18,9 +18,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   final TextEditingController noteController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   DateTime selectedDate = DateTime.now();
-  String selectedCategory = "Food";
+  String selectedCategory = Categories.all.first;
 
-  String selectedPaymentMethod = "UPI";
+  String selectedPaymentMethod = PaymentMethods.all.first;
 
   @override
   void dispose() {
@@ -28,6 +28,10 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     noteController.dispose();
     super.dispose();
   }
+  @override
+  void initState() {
+    super.initState();
+}
 
   @override
   Widget build(BuildContext context) {
@@ -63,19 +67,37 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
                 const SizedBox(height: 8),
 
-                TextField(
-                  controller: amountController,
+                TextFormField(
+  controller: amountController,
 
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
+  keyboardType: const TextInputType.numberWithOptions(
+    decimal: true,
+  ),
 
-                  decoration: const InputDecoration(
-                    hintText: "Enter amount",
-                    border: OutlineInputBorder(),
-                    prefixText: "₹ ",
-                  ),
-                ),
+  decoration: const InputDecoration(
+    hintText: "Enter amount",
+    border: OutlineInputBorder(),
+    prefixText: "₹ ",
+  ),
+
+  validator: (value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please enter an amount";
+    }
+
+    final amount = double.tryParse(value);
+
+    if (amount == null) {
+      return "Please enter a valid number";
+    }
+
+    if (amount <= 0) {
+      return "Amount must be greater than zero";
+    }
+
+    return null;
+  },
+),
 
                 const SizedBox(height: 25),
 
@@ -164,37 +186,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               const SizedBox(height: 8),
 
               TextFormField(
-                controller: amountController,
+  controller: noteController,
 
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
+  decoration: const InputDecoration(
+    hintText: "Optional note",
+    border: OutlineInputBorder(),
+  ),
 
-                decoration: const InputDecoration(
-                  hintText: "Enter amount",
-                  border: OutlineInputBorder(),
-                  prefixText: "₹ ",
-                ),
+  maxLines: 2,
 
-                validator: (value) {
-
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter an amount";
-                  }
-
-                  final amount = double.tryParse(value);
-
-                  if (amount == null) {
-                    return "Please enter a valid number";
-                  }
-
-                  if (amount <= 0) {
-                    return "Amount must be greater than zero";
-                  }
-
-                  return null;
-                },
-             ),
+  textCapitalization: TextCapitalization.sentences,
+),
 
               const SizedBox(height: 25),
 

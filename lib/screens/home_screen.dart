@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'add_expense_screen.dart';
 import '../providers/expense_provider.dart';
+import 'expense_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -148,6 +149,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         child: Card(
                           child: ListTile(
+                            onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => ExpenseDetailsScreen(
+        expense: expense,
+      ),
+    ),
+  );
+},
                             leading: CircleAvatar(
                               child: Text(expense.category[0]),
                             ),
