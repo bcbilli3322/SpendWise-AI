@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'add_expense_screen.dart';
+import '../providers/expense_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -39,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
 
-                  children: const [
+                  children: [
 
                     Text(
                       "Total Spending",
@@ -50,12 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     SizedBox(height: 10),
 
-                    Text(
-                      "₹0",
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Consumer<ExpenseProvider>(
+                      builder: (context, provider, child) {
+                        return Text(
+                          "₹${provider.totalExpense.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -75,14 +81,56 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 15),
 
             Expanded(
-              child: Center(
-                child: Text(
-                  "No expenses added yet.",
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 16,
-                  ),
-                ),
+              child: Consumer<ExpenseProvider>(
+                builder: (context, provider, child) {
+
+                  if (provider.expenses.isEmpty) {
+                    return Center(
+                      child: Text(
+                        "No expenses added yet.",
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: provider.expenses.length,
+
+                    itemBuilder: (context, index) {
+
+                      final expense = provider.expenses[index];
+
+                      return Card(
+                        child: ListTile(
+
+                          leading: CircleAvatar(
+                            child: Text(
+                            expense.category[0],
+                            ),
+                          ),
+
+                          title: Text(expense.note.isEmpty
+                              ? expense.category
+                              : expense.note),
+
+                          subtitle: Text(
+                            "${expense.category} • ${expense.paymentMethod}",
+                          ),
+
+                          trailing: Text(
+                            "₹${expense.amount.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],

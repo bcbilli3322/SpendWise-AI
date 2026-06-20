@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../constants/categories.dart';
 import '../constants/payment_methods.dart';
+import '../models/expense.dart';
+import '../providers/expense_provider.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -261,13 +264,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         return;
                       }
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-
-                        const SnackBar(
-                          content: Text("Validation Successful"),
-                        ),
-
+                      final expense = Expense(
+                        amount: double.parse(amountController.text),
+                        category: selectedCategory,
+                        note: noteController.text.trim(),
+                        paymentMethod: selectedPaymentMethod,
+                        date: selectedDate,
                       );
+
+                      context.read<ExpenseProvider>().addExpense(expense);
+
+                      Navigator.pop(context);
 
                     },
 
