@@ -6,14 +6,16 @@ import '../models/expense.dart';
 import '../providers/expense_provider.dart';
 
 class AddExpenseScreen extends StatefulWidget {
-  const AddExpenseScreen({super.key});
+  final Expense? expense;
+  final int? expenseIndex;
+
+  const AddExpenseScreen({super.key, this.expense, this.expenseIndex});
 
   @override
   State<AddExpenseScreen> createState() => _AddExpenseScreenState();
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
-
   final TextEditingController amountController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -28,85 +30,86 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     noteController.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
-}
+
+    if (widget.expense != null) {
+      amountController.text = widget.expense!.amount.toString();
+
+      noteController.text = widget.expense!.note;
+
+      selectedCategory = widget.expense!.category;
+
+      selectedPaymentMethod = widget.expense!.paymentMethod;
+
+      selectedDate = widget.expense!.date;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       appBar: AppBar(
-        title: const Text("Add Expense"),
+        title: Text(widget.expense == null ? "Add Expense" : "Edit Expense"),
       ),
 
       body: SafeArea(
-
         child: Form(
           key: _formKey,
 
           child: SingleChildScrollView(
-
             padding: const EdgeInsets.all(16),
 
             child: Column(
-
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 const Text(
                   "Amount",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
 
                 const SizedBox(height: 8),
 
                 TextFormField(
-  controller: amountController,
+                  controller: amountController,
 
-  keyboardType: const TextInputType.numberWithOptions(
-    decimal: true,
-  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
 
-  decoration: const InputDecoration(
-    hintText: "Enter amount",
-    border: OutlineInputBorder(),
-    prefixText: "₹ ",
-  ),
+                  decoration: const InputDecoration(
+                    hintText: "Enter amount",
+                    border: OutlineInputBorder(),
+                    prefixText: "₹ ",
+                  ),
 
-  validator: (value) {
-    if (value == null || value.trim().isEmpty) {
-      return "Please enter an amount";
-    }
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return "Please enter an amount";
+                    }
 
-    final amount = double.tryParse(value);
+                    final amount = double.tryParse(value);
 
-    if (amount == null) {
-      return "Please enter a valid number";
-    }
+                    if (amount == null) {
+                      return "Please enter a valid number";
+                    }
 
-    if (amount <= 0) {
-      return "Amount must be greater than zero";
-    }
+                    if (amount <= 0) {
+                      return "Amount must be greater than zero";
+                    }
 
-    return null;
-  },
-),
+                    return null;
+                  },
+                ),
 
                 const SizedBox(height: 25),
 
                 const Text(
                   "Category",
-                    style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
 
                 const SizedBox(height: 8),
@@ -126,13 +129,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                   }).toList(),
 
                   onChanged: (value) {
-
                     setState(() {
-
                       selectedCategory = value!;
-
                     });
-
                   },
                 ),
 
@@ -140,128 +139,98 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
                 const Text(
                   "Payment Method",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-              DropdownButtonFormField<String>(
-                initialValue: selectedPaymentMethod,
+                DropdownButtonFormField<String>(
+                  initialValue: selectedPaymentMethod,
 
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-
-                items: PaymentMethods.all.map((method) {
-                  return DropdownMenuItem(
-                    value: method,
-                    child: Text(method),
-                  );
-                }).toList(),
-
-                onChanged: (value) {
-
-                  setState(() {
-
-                    selectedPaymentMethod = value!;
-
-                  });
-
-                },
-              ),
-
-              const SizedBox(height: 25),
-
-              const Text(
-                "Note",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              TextFormField(
-  controller: noteController,
-
-  decoration: const InputDecoration(
-    hintText: "Optional note",
-    border: OutlineInputBorder(),
-  ),
-
-  maxLines: 2,
-
-  textCapitalization: TextCapitalization.sentences,
-),
-
-              const SizedBox(height: 25),
-
-              const Text(
-                "Date",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              SizedBox(
-                width: double.infinity,
-
-                child: OutlinedButton.icon(
-
-                  icon: const Icon(Icons.calendar_month),
-
-                  label: Text(
-                    "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
                   ),
 
-                  onPressed: () async {
+                  items: PaymentMethods.all.map((method) {
+                    return DropdownMenuItem(value: method, child: Text(method));
+                  }).toList(),
 
-                    final picked = await showDatePicker(
-
-                      context: context,
-
-                      initialDate: selectedDate,
-
-                      firstDate: DateTime(2020),
-
-                      lastDate: DateTime(2100),
-
-                    );
-
-                    if (picked != null) {
-
-                      setState(() {
-
-                        selectedDate = picked;
-
-                      });
-
-                    }
-
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPaymentMethod = value!;
+                    });
                   },
-
                 ),
-              ),
 
-              const SizedBox(height: 35),
+                const SizedBox(height: 25),
+
+                const Text(
+                  "Note",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+
+                const SizedBox(height: 8),
+
+                TextFormField(
+                  controller: noteController,
+
+                  decoration: const InputDecoration(
+                    hintText: "Optional note",
+                    border: OutlineInputBorder(),
+                  ),
+
+                  maxLines: 2,
+                  textCapitalization: TextCapitalization.sentences,
+                ),
+
+                const SizedBox(height: 25),
+
+                const Text(
+                  "Date",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+
+                const SizedBox(height: 8),
 
                 SizedBox(
+                  width: double.infinity,
 
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.calendar_month),
+
+                    label: Text(
+                      "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                    ),
+
+                    onPressed: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+
+                        initialDate: selectedDate,
+
+                        firstDate: DateTime(2020),
+
+                        lastDate: DateTime(2100),
+                      );
+
+                      if (picked != null) {
+                        setState(() {
+                          selectedDate = picked;
+                        });
+                      }
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 35),
+
+                SizedBox(
                   width: double.infinity,
 
                   height: 55,
 
                   child: FilledButton(
-
                     onPressed: () {
-
                       if (!_formKey.currentState!.validate()) {
                         return;
                       }
@@ -274,24 +243,22 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                         date: selectedDate,
                       );
 
-                      context.read<ExpenseProvider>().addExpense(expense);
+                      final provider = context.read<ExpenseProvider>();
+
+                      if (widget.expense == null) {
+                        provider.addExpense(expense);
+                      } else {
+                        provider.updateExpense(widget.expenseIndex!, expense);
+                      }
 
                       Navigator.pop(context);
-
                     },
 
-                    child: const Text(
-
-                      "Add Expense",
-
-                      style: TextStyle(fontSize: 16),
-
+                    child: Text(
+                      widget.expense == null ? "Add Expense" : "Save Changes",
                     ),
-
                   ),
-
                 ),
-
               ],
             ),
           ),

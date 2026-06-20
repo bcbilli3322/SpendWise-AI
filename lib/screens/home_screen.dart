@@ -12,14 +12,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-
       appBar: AppBar(
         title: const Text(
           "SpendWise AI",
@@ -34,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -43,13 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
-
-                    Text(
-                      "Total Spending",
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
+                    Text("Total Spending", style: TextStyle(fontSize: 18)),
 
                     SizedBox(height: 10),
 
@@ -73,10 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const Text(
               "Recent Expenses",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 15),
@@ -84,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Consumer<ExpenseProvider>(
                 builder: (context, provider, child) {
-
                   if (provider.expenses.isEmpty) {
                     return Center(
                       child: Text(
@@ -101,7 +87,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: provider.expenses.length,
 
                     itemBuilder: (context, index) {
-
                       final expense = provider.expenses[index];
 
                       return Dismissible(
@@ -113,16 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           color: Colors.red,
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
+                          child: const Icon(Icons.delete, color: Colors.white),
                         ),
 
                         onDismissed: (_) {
                           final deletedExpense = expense;
                           final deletedIndex = index;
-                          
 
                           provider.deleteExpense(index);
 
@@ -150,15 +131,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Card(
                           child: ListTile(
                             onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => ExpenseDetailsScreen(
-        expense: expense,
-      ),
-    ),
-  );
-},
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => ExpenseDetailsScreen(
+                                    expense: expense,
+                                    expenseIndex: index,
+                                  ),
+                                ),
+                              );
+                            },
                             leading: CircleAvatar(
                               child: Text(expense.category[0]),
                             ),
@@ -195,9 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (_) => const AddExpenseScreen(),
-            ),
+            MaterialPageRoute(builder: (_) => const AddExpenseScreen()),
           );
         },
 
@@ -214,21 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
         },
 
         destinations: const [
-
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
+          NavigationDestination(icon: Icon(Icons.home), label: "Home"),
 
           NavigationDestination(
             icon: Icon(Icons.analytics),
             label: "Analytics",
           ),
 
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
+          NavigationDestination(icon: Icon(Icons.settings), label: "Settings"),
         ],
       ),
     );

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import '../utils/date_formatter.dart';
 import '../models/expense.dart';
+import 'add_expense_screen.dart';
 
 class ExpenseDetailsScreen extends StatelessWidget {
   final Expense expense;
+  final int expenseIndex;
 
   const ExpenseDetailsScreen({
     super.key,
     required this.expense,
+    required this.expenseIndex,
   });
 
   @override
   Widget build(BuildContext context) {
-    final formattedDate =
-    DateFormat('dd MMM yyyy • h:mm a').format(expense.date);
+    final formattedDate = AppDateFormatter.formatExpenseDate(expense.date);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Expense Details"),
-      ),
+      appBar: AppBar(title: const Text("Expense Details")),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -30,12 +30,9 @@ class ExpenseDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
-
                 const Text(
                   "Amount",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 Text(
@@ -47,9 +44,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
 
                 const Text(
                   "Category",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 Text(expense.category),
@@ -58,9 +53,7 @@ class ExpenseDetailsScreen extends StatelessWidget {
 
                 const Text(
                   "Payment Method",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 Text(expense.paymentMethod),
@@ -69,27 +62,42 @@ class ExpenseDetailsScreen extends StatelessWidget {
 
                 const Text(
                   "Note",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
-                Text(
-                  expense.note.isEmpty
-                      ? "No note"
-                      : expense.note,
-                ),
+                Text(expense.note.isEmpty ? "No note" : expense.note),
 
                 const SizedBox(height: 20),
 
                 const Text(
                   "Date",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
 
                 Text(formattedDate),
+                const Spacer(),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: FilledButton.icon(
+                    icon: const Icon(Icons.edit),
+
+                    label: const Text("Edit Expense"),
+
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => AddExpenseScreen(
+                            expense: expense,
+                            expenseIndex: expenseIndex,
+                          ),
+                        ),
+                      ); // Next step
+                    },
+                  ),
+                ),
               ],
             ),
           ),

@@ -37,4 +37,9 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateExpense(int index, Expense updatedExpense) {
+    _expenses[index] = updatedExpense;
+    notifyListeners();
+}
+
 }
