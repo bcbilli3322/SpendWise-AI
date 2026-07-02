@@ -4,8 +4,15 @@ import 'package:provider/provider.dart';
 import 'providers/expense_provider.dart';
 import 'screens/home_screen.dart';
 import 'utils/app_theme.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'models/expense.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(ExpenseAdapter());
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ExpenseProvider(),
